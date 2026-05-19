@@ -5,6 +5,7 @@ from sklearn.model_selection import StratifiedKFold, cross_val_score
 
 def load_data(csv_path, target_col="target"):
 	df = pandas.read_csv(csv_path)
+	print(df[target_col].value_counts())
 	X = df.drop(columns=[target_col])
 	Y = df[target_col]
 	return X, Y 
