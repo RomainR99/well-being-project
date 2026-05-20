@@ -51,7 +51,7 @@ def find_optimal_model(
 			X_normalized=X_normalized,
 			Y=Y,
 			param_grid=model_to_optimize[1],
-			n_splits=10,
+			n_splits=n_splits,
 			scoring="f1_weighted",
 		)
 		if score > best_score:
