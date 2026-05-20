@@ -26,3 +26,24 @@ Le script charge `bienetre.csv`, normalise les données, puis cherche la valeur 
 - Python 3.x
 - pandas
 - scikit-learn
+
+
+attention au outliers avec k=1 et k=2 d'ou k=5 à 100 pas de 2.
+Exemple :
+
+class Chien:
+
+    def __init__(self, nom):
+        self.nom = nom
+
+    def parler(self):
+        print(self.nom)
+
+Puis :
+
+animal = Chien("Rex")
+animal.parler()
+
+Python fait en réalité :
+
+Chien.parler(animal)

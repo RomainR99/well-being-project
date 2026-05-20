@@ -1,7 +1,6 @@
-from sklearn.model_selection import StratifiedKFold, cross_val_score, GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
-
-
+from stratified_k_fold import StratifiedKFold
+from grid_search_c_v import GridSearchCV
+from knn_classifier import KNeighborsClassifier
 
 def find_optimal_params(
 		model_name,
