@@ -21,6 +21,35 @@ python main.py
 
 Le script charge `bienetre.csv`, normalise les données, puis cherche la valeur de `k` optimale et affiche les résultats.
 
+## Résultats
+
+Exécution de `python3 main.py` (KNN from scratch, grille `[3, 5, 7, 9]`, `n_splits=5`) :
+
+```
+Loading data phase
+target
+1    4000
+0    4000
+2    2000
+Name: count, dtype: int64
+Sucess : Loading data
+--------------------
+Finding optimal params for KNeighborsClassifier
+Best Params
+{'n_neighbors': 5}
+f1_weighted : 0.9986
+----------------------------------------------------------------------------------------------------
+Le model le plus optimisé est KNeighborsClassifier
+Best Params : {'n_neighbors': 5}
+f1_weighted : 0.9986
+```
+
+| Métrique | Valeur |
+|----------|--------|
+| Modèle | `KNeighborsClassifier` |
+| Meilleur `n_neighbors` | **5** |
+| Score `f1_weighted` | **0.9986** |
+
 ## Dépendances
 
 - Python 3.x
