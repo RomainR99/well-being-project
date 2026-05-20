@@ -1,3 +1,5 @@
+#from sklearn.tree import DecisionTreeClassifier
+
 from stratified_k_fold import StratifiedKFold
 from grid_search_c_v import GridSearchCV
 from knn_classifier import KNeighborsClassifier
@@ -38,8 +40,17 @@ def find_optimal_model(
 	
 	dict_parms_per_model = {
 		#"KNeighborsClassifier": (KNeighborsClassifier, {'n_neighbors': list(range(1, 100, 2))}),
-		"KNeighborsClassifier": (KNeighborsClassifier, {'n_neighbors': [3, 5, 7, 9]}),
+		"KNeighborsClassifier": 
+			(KNeighborsClassifier, {'n_neighbors': [3, 5, 7, 9]}),
+		#"DecisionTreeClassifier": 
+		#	(DecisionTreeClassifier, { 
+		#		"criterion": ["gini", "entropy"],#GridSearchCV va tester :arbre avec gini et arbre avec entropy
+		#		"max_depth": [None, 3, 5, 10],#test  la profondeur de l'arbre
+		#		"min_samples_split": [2, 5, 10],#test le nombre de données minimum pour séparer les données
+		#		"min_samples_leaf": [1, 2, 4],#test nombre de données minimum pour chaque LEAF 
+		#	}),
 	}
+	
 
 	best_score = -float("inf")
 	best_model_name = None
