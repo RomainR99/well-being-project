@@ -32,12 +32,13 @@ def find_optimal_params(
 def find_optimal_model(
 		X_normalized,
 		Y,
-		n_splits=10,
+		n_splits=5,# nombre de fold pour la validation croisée
 		scoring="f1_weighted",
 	):
 	
 	dict_parms_per_model = {
-		"KNeighborsClassifier": (KNeighborsClassifier, {'n_neighbors': list(range(1, 100, 2))}),
+		#"KNeighborsClassifier": (KNeighborsClassifier, {'n_neighbors': list(range(1, 100, 2))}),
+		"KNeighborsClassifier": (KNeighborsClassifier, {'n_neighbors': [3, 5, 7, 9]}),
 	}
 
 	best_score = -float("inf")

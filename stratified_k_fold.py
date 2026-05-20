@@ -39,4 +39,10 @@ class StratifiedKFold():
                     current_indexes[start:end]
                 )
 
-        return folds
+        n_samples = len(y)
+        all_indexes = list(range(n_samples))
+
+        for test_indexes in folds:
+            test_set = set(test_indexes)
+            train_indexes = [i for i in all_indexes if i not in test_set]
+            yield train_indexes, test_indexes

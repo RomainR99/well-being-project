@@ -1,84 +1,105 @@
-class GridSearchCV(BaseSearchCV):
-
-    _parameter_constraints: dict = {
-        **BaseSearchCV._parameter_constraints,
-        "param_grid": [dict, list],
-    }
-
+class GridSearchCV:
     def __init__(
         self,
-        estimator,
+        model,
         param_grid,
-        *,
         scoring=None,
-        n_jobs=None,
-        refit=True,
         cv=None,
-        verbose=0,
-        pre_dispatch="2*n_jobs",
-        error_score=np.nan,
-        return_train_score=False,
     ):
-        super().__init__(
-            estimator=estimator,
-            scoring=scoring,
-            n_jobs=n_jobs,
-            refit=refit,
-            cv=cv,
-            verbose=verbose,
-            pre_dispatch=pre_dispatch,
-            error_score=error_score,
-            return_train_score=return_train_score,
-        )
+
+
+
+        self.model = model
+
         self.param_grid = param_grid
 
-    def _run_search(self, evaluate_candidates):
-        evaluate_candidates(ParameterGrid(self.param_grid))
+        self.scoring = scoring
+
+        self.cv = cv
+
+        self.best_score_ = None
+
+        self.best_params_ = None
+
+    def fit(self, X, y):
+
+        best_score = -1
+
+        best_params = None
+
+        # evaluate_candidates(ParameterGrid(...))
+        # Supprimé :
+        # sklearn génère automatiquement toutes
+        # les combinaisons de paramètres.
+        #
+        # Nous faisons simplement une boucle.
+
+        for current_k in self.param_grid["n_neighbors"]:
+
+            scores = []
+
+            # cv.split(...)
+            # Conservé :
+            # cross validation manuelle.
+            for train_indexes, test_indexes in self.cv.split(X, y):
+
+                X_train = []
+                y_train = []
+
+                X_test = []
+                y_test = []
+
+                for index in train_indexes:
+                    X_train.append(X[index])
+                    y_train.append(y[index])
+
+                for index in test_indexes:
+                    X_test.append(X[index])
+                    y_test.append(y[index])
+
+                # model.set_params(...)
+                # Supprimé :
+                # nous modifions directement n_neighbors.
+                self.model.n_neighbors = current_k
+
+                self.model.fit(X_train, y_train)
+
+                score = self.model.score(X_test, y_test)
+
+                scores.append(score)
+
+            average_score = sum(scores) / len(scores)
+
+            if average_score > best_score:
+
+                best_score = average_score
+
+                best_params = {
+                    "n_neighbors": current_k
+                }
+
+        self.best_score_ = best_score
+
+        self.best_params_ = best_params
+
+        return self
 
 
-class RandomizedSearchCV(BaseSearchCV):
-
-    _parameter_constraints: dict = {
-        **BaseSearchCV._parameter_constraints,
-        "param_distributions": [dict, list],
-        "n_iter": [Interval(numbers.Integral, 1, None, closed="left")],
-        "random_state": ["random_state"],
-    }
-
-    def __init__(
-        self,
-        estimator,
-        param_distributions,
-        *,
-        n_iter=10,
-        scoring=None,
-        n_jobs=None,
-        refit=True,
-        cv=None,
-        verbose=0,
-        pre_dispatch="2*n_jobs",
-        random_state=None,
-        error_score=np.nan,
-        return_train_score=False,
-    ):
-        self.param_distributions = param_distributions
-        self.n_iter = n_iter
-        self.random_state = random_state
-        super().__init__(
-            estimator=estimator,
-            scoring=scoring,
-            n_jobs=n_jobs,
-            refit=refit,
-            cv=cv,
-            verbose=verbose,
-            pre_dispatch=pre_dispatch,
-            error_score=error_score,
-            return_train_score=return_train_score,
-        )
-
-    def _run_search(self, evaluate_candidates):
-        evaluate_candidates(
-            ParameterSampler(
-                self.param_distributions, self.n_iter, random_state=self.random_state
-            )
-        )
+# class RandomizedSearchCV(BaseSearchCV):
+#
+# Supprimé complètement :
+#
+# RandomizedSearchCV teste des paramètres aléatoires.
+#
+# Ton exercice utilise seulement :
+#
+# GridSearchCV
+#
+# donc cette classe est inutile.
+#
+# param_distributions
+# n_iter
+# random_state
+# ParameterSampler
+#
+# deviennent inutiles également.
