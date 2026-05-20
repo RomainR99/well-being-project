@@ -56,6 +56,9 @@ f1_weighted : 0.9986
 - pandas
 - scikit-learn
 
+## Ressources
+
+- [Decision and Classification Trees, Clearly Explained!!!](https://www.youtube.com/watch?v=_L39rN6gz7Y)
 
 attention au outliers avec k=1 et k=2 d'ou k=5 à 100 pas de 2.
 Exemple :
