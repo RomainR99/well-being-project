@@ -50,6 +50,86 @@ f1_weighted : 0.9986
 | Meilleur `n_neighbors` | **5** |
 | Score `f1_weighted` | **0.9986** |
 
+## Arbre de décision (Decision Tree)
+
+Sur ce jeu de données de bien-être, on observe typiquement :
+
+- des **variables très corrélées** ;
+- du **bruit** ;
+- des **relations complexes**.
+
+Exemples de corrélations entre features :
+
+| Paire | Lien |
+|-------|------|
+| poids ↔ IMC | mesures redondantes du même phénomène |
+| stress ↔ sommeil | variables liées au rythme de vie |
+| activité ↔ exercice | indicateurs proches de l’effort physique |
+
+Un arbre **trop profond** risque alors :
+
+- de **mémoriser des cas particuliers** (sur-apprentissage) ;
+- au lieu d’**apprendre de vraies tendances** généralisables.
+
+D’où l’intérêt de limiter la profondeur (`max_depth`), d’imposer un gain d’information minimal (`min_information_gain`) ou un minimum d’échantillons par feuille (`min_samples_leaf`) — paramètres exposés dans `decision_tree.py`.
+
+### `min_information_gain`
+
+Mesure **combien le split rend les groupes plus « purs »** : on n’accepte une division que si le gain d’information dépasse ce seuil. Plus la valeur est haute, moins l’arbre se divise.
+
+**Valeurs réalistes** (souvent) :
+
+| Valeur | Effet |
+|--------|--------|
+| `0.0` | accepte tous les splits |
+| `0.001` | filtre très léger |
+| `0.01` | filtre raisonnable |
+| `0.1` | assez strict |
+| `1` | souvent trop énorme |
+
+### `-> None` (annotation de type)
+
+`-> None` est une **annotation de type** en Python. Elle indique : *« cette fonction ne retourne rien »*.
+
+**Exemple :**
+
+```python
+def bonjour() -> None:
+    print("Salut")
+```
+
+Ici :
+
+- la fonction **affiche** quelque chose ;
+- mais **ne retourne aucune valeur** utile.
+
+Donc `-> None` signifie : pas de `return` utile (équivalent implicite à `return None` si on ne précise rien).
+
+**Cas du constructeur** (`__init__` dans `decision_tree.py`) :
+
+```python
+def __init__(self, max_depth=4, ...) -> None:
+    self.max_depth = max_depth
+    ...
+```
+
+Le constructeur :
+
+- **initialise** l’objet ;
+- **stocke** des variables (`self.max_depth`, etc.) ;
+- mais **ne renvoie rien** — c’est normal pour `__init__`.
+
+### Ce que tu dois observer
+
+Quand tu coderas, compare les scores **train** et **test** :
+
+| Train | Test | Interprétation |
+|-------|------|----------------|
+| 99 % | 55 % | → arbre **trop complexe** (sur-apprentissage) |
+| 80 % | 78 % | → souvent **meilleur** (bonne généralisation) |
+
+Un grand écart train/test signale que le modèle a appris le jeu d’entraînement par cœur plutôt que des règles utiles sur de nouvelles données.
+
 ## Dépendances
 
 - Python 3.x
