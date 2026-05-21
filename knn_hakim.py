@@ -73,6 +73,8 @@ class KNN:
 		# Le dictionnaire est trié par ordre croissant, donc le gagnant est le dernier [-1].
 		sorted_label_counter = KNN.sorted_dict_by_values(label_counter)
 		predicted_label = list(sorted_label_counter.keys())[-1]
+		#Le [-1] sert à prendre le dernier élément d’une liste.
+		#car le dernier = la classe avec le plus grand vote.
 
 		return predicted_label
 
@@ -83,6 +85,7 @@ class KNN:
 	@staticmethod
 	def euclidian_distance(x1, x2):
 		x1, x2 = list(x1), list(x2)[0]  # conversion en listes Python standard
+		# 0 sert  à extraire le vrai vecteur.
 
 		# Formule : √[ Σ(aᵢ - bᵢ)² ]
 		# zip(strict=True) associe les features deux à deux et lève une erreur

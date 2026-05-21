@@ -1,8 +1,6 @@
-#from sklearn.tree import DecisionTreeClassifier
-
-from stratified_k_fold import StratifiedKFold
-from grid_search_c_v import GridSearchCV
-from knn_classifier import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import StratifiedKFold, cross_val_score, GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
 
 def find_optimal_params(
 		model_name,
