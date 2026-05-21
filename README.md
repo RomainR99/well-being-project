@@ -50,7 +50,43 @@ f1_weighted : 0.9986
 | Meilleur `n_neighbors` | **5** |
 | Score `f1_weighted` | **0.9986** |
 
+## KNN — ce que fait `fit()`
+
+Pour KNN, contrairement à d’autres modèles, `fit()` **n’apprend pas vraiment une formule**. Il stocke simplement les exemples connus (lazy learning).
+
+```python
+knn_object.fit(X_normalized, Y)
+```
+
+veut dire :
+
+- **Voici les personnes connues :** `X_normalized`
+- **Voici leurs classes :** `Y`
+- **Garde-les en mémoire** pour comparer plus tard lors de `predict()`.
+
+Tout le « apprentissage » se fait au moment de la prédiction : on calcule les distances vers chaque exemple mémorisé, on garde les `k` plus proches voisins, puis on vote.
+
+Implémentation : `knn_hakim.py`.
+
 ## Arbre de décision (Decision Tree)
+
+### `fit()` — pas comme le KNN
+
+Contrairement au KNN, l’arbre de décision **ne calcule pas de distances** entre points. Il compare des seuils sur chaque feature (`stress <= 6`, etc.).
+
+Donc **pas besoin de données normalisées** pour `fit()` :
+
+```python
+def fit(self, X, Y):
+    ...
+```
+
+| Modèle | `fit()` attend souvent | Pourquoi |
+|--------|------------------------|----------|
+| **KNN** | `X_normalized` | distances euclidiennes sensibles à l’échelle des colonnes |
+| **Decision Tree** | `X` (brut ou normalisé) | splits sur `<=` / `>` : multiplier une colonne par une constante ne change pas l’ordre des splits |
+
+Dans `decision_tree.py`, on peut donc passer `X` directement après `load_data()`, sans `StandardScaler`.
 
 Sur ce jeu de données de bien-être, on observe typiquement :
 
@@ -91,6 +127,8 @@ Mesure **combien le split rend les groupes plus « purs »** : on n’accepte un
 
 `-> None` est une **annotation de type** en Python. Elle indique : *« cette fonction ne retourne rien »*.
 
+**Important :** c’est **juste une annotation du code**. Python **ne l’applique pas** à l’exécution : tu peux écrire `-> str` et retourner un nombre — le programme tournera quand même. Les annotations servent aux **humains**, à l’**IDE** et aux **linters** (basedpyright, mypy) pour comprendre et vérifier le code.
+
 **Exemple :**
 
 ```python
@@ -119,6 +157,29 @@ Le constructeur :
 - **stocke** des variables (`self.max_depth`, etc.) ;
 - mais **ne renvoie rien** — c’est normal pour `__init__`.
 
+### Utilité concrète n°3 : détecter des erreurs
+
+Les annotations servent aussi à **détecter des erreurs** avant l’exécution (via l’IDE ou un linter comme basedpyright).
+
+**Exemple :**
+
+```python
+def get_name() -> str:
+    return "Romain"
+
+name = get_name()
+
+print(name + 5)  # erreur : on ne peut pas additionner str + int
+```
+
+L’IDE peut alors t’alerter :
+
+> attention : `str` + `int`
+
+Sans annotation, `get_name()` pourrait être confondu avec une fonction qui retourne autre chose ; avec `-> str`, l’outil sait que `name` est une chaîne et signale l’opération invalide.
+
+En résumé : annotation = **documentation + aide à la détection d’erreurs**, pas une règle imposée par Python au runtime.
+
 ### Ce que tu dois observer
 
 Quand tu coderas, compare les scores **train** et **test** :
@@ -129,6 +190,63 @@ Quand tu coderas, compare les scores **train** et **test** :
 | 80 % | 78 % | → souvent **meilleur** (bonne généralisation) |
 
 Un grand écart train/test signale que le modèle a appris le jeu d’entraînement par cœur plutôt que des règles utiles sur de nouvelles données.
+
+## Notes Python — `keys()`, `values()`, `items()`
+
+`keys()`, `values()` et `items()` sont **natifs Python**, mais **uniquement pour les dictionnaires** (`dict`), pas pour les `set`.
+
+### 1. Dictionnaire (`dict`)
+
+```python
+personne = {
+    "nom": "Romain",
+    "age": 25
+}
+```
+
+**`keys()`** — donne les clés :
+
+```
+"nom", "age"
+```
+
+**`values()`** — donne les valeurs :
+
+```
+"Romain", 25
+```
+
+**`items()`** — donne **clé + valeur** (paires) :
+
+```python
+("nom", "Romain")
+("age", 25)
+```
+
+Utile pour parcourir un dict : `for cle, valeur in personne.items():`
+
+### 2. Set (`set`)
+
+Un `set` est différent :
+
+```python
+labels = {0, 1, 2}
+```
+
+Un set contient seulement des **valeurs uniques**. Il n’y a **pas** :
+
+- de clé ;
+- de valeur associée à une clé.
+
+Donc :
+
+```python
+labels.keys()  # ❌ AttributeError
+```
+
+**Pourquoi ?** Parce qu’un `set` n’est pas une structure **clé → valeur**, contrairement à un `dict`.
+
+Dans le projet (ex. `knn_hakim.py`), `set(Y)` sert à lister les **classes distinctes** ; les comptages par classe passent par un **dictionnaire** (`label_occurences`), où `keys()`, `values()` et `items()` ont du sens.
 
 ## Dépendances
 
