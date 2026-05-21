@@ -258,9 +258,43 @@ Dans le projet (ex. `knn_hakim.py`), `set(Y)` sert à lister les **classes disti
 
 - [Decision and Classification Trees, Clearly Explained!!!](https://www.youtube.com/watch?v=_L39rN6gz7Y)
 
-attention au outliers avec k=1 et k=2 d'ou k=5 à 100 pas de 2.
-Exemple :
+## Notes Python — méthodes spéciales (`__add__`, `__str__`)
 
+Python permet de redéfinir le comportement des opérateurs et de `print()` via des **méthodes spéciales** (dunder methods).
+
+```python
+class Number:
+
+    def __init__(self, value):
+        self.value = value
+
+    def __add__(self, other):
+        return Number(self.value + other.value)
+
+    def __str__(self):
+        return f"Number({self.value})"
+
+
+a = Number(10)
+b = Number(5)
+
+c = a + b
+
+print(c)
+```
+
+Affiche : `Number(15)`
+
+| Expression | Appel réel |
+|------------|------------|
+| `a + b` | `a.__add__(b)` |
+| `print(c)` | `c.__str__()` |
+
+`__add__` définit ce que fait `+` entre deux objets `Number`. `__str__` définit la représentation texte utilisée par `print()`.
+
+## Notes Python — appel de méthode
+
+```python
 class Chien:
 
     def __init__(self, nom):
@@ -269,11 +303,17 @@ class Chien:
     def parler(self):
         print(self.nom)
 
-Puis :
 
 animal = Chien("Rex")
 animal.parler()
+```
 
-Python fait en réalité :
+Python transforme en réalité :
 
+```python
 Chien.parler(animal)
+```
+
+## Note KNN — choix de k
+
+Attention aux outliers avec `k=1` et `k=2` ; d’où une grille typique `k ∈ [5, 100]` par pas de 2 (valeurs impaires), plutôt que des petits k trop sensibles au bruit.
