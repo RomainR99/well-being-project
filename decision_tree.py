@@ -47,6 +47,29 @@ class DecisionTree:
 		#4. créer le node
 		return Node(feature=best_split[0], threshold=best_split[1], left=left_node, right=right_node)
 
+    def predict_leaf(self, Y):
+            return Y.mode()[0]
+            #mode() renvoie la valeur la plus fréquente dans Y
+    
+    
+    def split_data(self, X, Y, best_split):
+        left_X = X[X[best_split[0]] <= best_split[1]]
+        left_Y = Y[X[best_split[0]] <= best_split[1]]
+        right_X = X[X[best_split[0]] > best_split[1]]
+        right_Y = Y[X[best_split[0]] > best_split[1]]
+        return left_X, left_Y, right_X, right_Y
+    
+    def gini(self, Y):
+        total = len(Y)
+        if total == 0:
+            return 0
+        gini = 1
+        for label in self.set_of_labels:
+            probability = (Y == label).sum() / total
+            gini -= probability ** 2
+        return gini
+
+
 """
     On hérite seulement si :"A est un type de B
     Ex: Chien est un Animal
