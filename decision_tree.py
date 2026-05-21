@@ -47,6 +47,22 @@ class DecisionTree:
 		#4. créer le node
 		return Node(feature=best_split[0], threshold=best_split[1], left=left_node, right=right_node)
 
+"""
+    On hérite seulement si :"A est un type de B
+    Ex: Chien est un Animal
+
+    DecisionTree : contient des Node , Il n’est pas un Node.
+"""
+
+#Une instance d’objet est un objet créé à partir d’une classe.
+
+class Node:
+    def __init__ (self, feature=None, threshold=None, left=None, right=None, value=None):
+        self.feature = feature
+        self.threshold = threshold
+        self.left = left
+        self.right = right
+        self.value = value
 
 
 if __name__ == "__main__":
